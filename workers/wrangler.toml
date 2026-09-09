@@ -1,0 +1,20 @@
+# Phase 3: replace database_id after `wrangler d1 create portfolio-db`.
+name = "portfolio-api"
+main = "src/index.ts"
+compatibility_date = "2025-01-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "portfolio-db"
+database_id = "9c56f3ff-70e1-4a6b-8917-d04619faa57a"
+migrations_dir = "../migrations"
+
+[[r2_buckets]]
+binding = "FILES"
+bucket_name = "portfolio-files"
+
+[vars]
+ALLOWED_ORIGIN = "*"
+# Public file URL base for R2 (set after connecting a custom domain to the
+# bucket in the Cloudflare dashboard, §22). Empty = API returns storage keys.
+R2_PUBLIC_URL = ""

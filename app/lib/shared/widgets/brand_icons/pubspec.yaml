@@ -1,0 +1,15 @@
+---
+name: simple_icons
+description: "Brand icon font (GitHub, LinkedIn, X, Reddit, Telegram) — zero network, pure Flutter."
+version: 0.0.1
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.0.0"
+dependencies:
+  flutter:
+    sdk: flutter
+flutter:
+  fonts:
+    - family: BrandIcons
+      fonts:
+        - asset: fonts/brand_icons.ttf

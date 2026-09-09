@@ -1,0 +1,2 @@
+# SPA fallback: serve index.html for app routes (static files win).
+/* /index.html 200

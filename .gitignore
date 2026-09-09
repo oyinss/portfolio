@@ -1,0 +1,21 @@
+# Cloudflare / wrangler local state and secrets
+.wrangler/
+.dev.vars
+
+# Env files (may contain credentials — never commit)
+.env
+*.env
+
+# Node
+node_modules/
+
+# Flutter / Dart
+app/build/
+app/.dart_tool/
+app/.flutter-plugins
+app/.flutter-plugins-dependencies
+
+# OS / editors
+.DS_Store
+.idea/
+.vscode/
