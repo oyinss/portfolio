@@ -12,6 +12,7 @@ class Project {
   final String slug;
   final String shortDescription;
   final String description;
+  final String? imageUrl;
   final String? liveUrl;
   final String? githubUrl;
   final List<String> technologies;
@@ -30,6 +31,7 @@ class Project {
     required this.slug,
     required this.shortDescription,
     required this.description,
+    this.imageUrl,
     this.liveUrl,
     this.githubUrl,
     required this.technologies,
@@ -59,6 +61,7 @@ class Project {
       slug: (j['slug'] ?? '') as String,
       shortDescription: _str(j, 'shortDescription', 'short_description') ?? '',
       description: (j['description'] ?? '') as String,
+      imageUrl: _str(j, 'imageUrl', 'image_url'),
       liveUrl: _str(j, 'liveUrl', 'live_url'),
       githubUrl: _str(j, 'githubUrl', 'github_url'),
       technologies: ((j['technologies'] ?? []) as List).map((e) => '$e').toList(),

@@ -33,7 +33,7 @@ class ProjectsPage extends StatelessWidget {
               physics: const NeverScrollableScrollPhysics(),
               mainAxisSpacing: 12,
               crossAxisSpacing: 12,
-              childAspectRatio: wide ? 1.5 : 1.1,
+              childAspectRatio: wide ? 1.25 : 0.85,
               children: [
                 for (final p in projects)
                   ProjectCard(project: p, onTap: () => context.go('/projects/${p.slug}')),

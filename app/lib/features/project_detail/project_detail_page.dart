@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/api/portfolio_repository.dart';
+import '../../core/utils/file_url.dart';
 import '../../models/project.dart';
 import '../../shared/widgets/async_view.dart';
 import '../../shared/widgets/page_scaffold.dart';
@@ -46,27 +47,40 @@ class _DetailBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
+    final imageUrl = resolveFileUrl(project.imageUrl);
     return PageContainer(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            height: 200,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+          if (imageUrl != null)
+            ClipRRect(
               borderRadius: BorderRadius.circular(16),
-            ),
-            child: Center(
-              child: Text(
-                project.title.toUpperCase(),
-                style: text.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.w800,
-                  color: Theme.of(context).colorScheme.primary,
+              child: Image.network(
+                imageUrl,
+                height: 280,
+                width: double.infinity,
+                fit: BoxFit.cover,
+                errorBuilder: (c, e, s) => const SizedBox.shrink(),
+              ),
+            )
+          else
+            Container(
+              height: 200,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Center(
+                child: Text(
+                  project.title.toUpperCase(),
+                  style: text.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.w800,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
                 ),
               ),
             ),
-          ),
           const SizedBox(height: 20),
           Text('${project.type} · ${project.dateLabel}', style: text.bodySmall),
           Text(project.title, style: text.headlineMedium?.copyWith(fontWeight: FontWeight.w800)),

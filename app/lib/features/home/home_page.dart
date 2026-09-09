@@ -103,7 +103,7 @@ class _HomeBody extends StatelessWidget {
             children: [
               for (final p in featured)
                 SizedBox(
-                  height: 300,
+                  height: 400,
                   child: ProjectCard(project: p, onTap: () => context.go('/projects/${p.slug}')),
                 ),
             ],
