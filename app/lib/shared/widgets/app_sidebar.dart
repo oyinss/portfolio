@@ -71,6 +71,7 @@ class AppSidebar extends StatelessWidget {
                       const SizedBox(height: 12),
                       Text(
                         profile?.name ?? '…',
+                        textAlign: TextAlign.center,
                         style: TextStyle(
                             color: tokens.textPrimary,
                             fontWeight: FontWeight.w700,
@@ -79,6 +80,7 @@ class AppSidebar extends StatelessWidget {
                       const SizedBox(height: 2),
                       Text(
                         profile?.title ?? '',
+                        textAlign: TextAlign.center,
                         style: TextStyle(color: tokens.textSecondary, fontSize: 13),
                       ),
                     ],
