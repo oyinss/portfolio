@@ -44,7 +44,7 @@ class _SettingsPageState extends State<SettingsPage> {
         for (final (key, _) in _defs) key: _c(key).text.trim(),
       });
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Settings saved.')));
+        goBackAfterSave(context, '/admin');
       }
     } catch (e) {
       if (mounted) showAdminError(context, e);

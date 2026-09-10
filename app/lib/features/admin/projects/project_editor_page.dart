@@ -2,7 +2,6 @@
 library;
 
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../core/api/admin_repository.dart';
@@ -91,10 +90,7 @@ class _ProjectEditorPageState extends State<ProjectEditorPage> {
     setState(() => _saving = true);
     try {
       await admin.saveProject(_data(), id: widget.id);
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Project saved.')));
-        context.go('/admin/projects');
-      }
+      if (mounted) goBackAfterSave(context, '/admin/projects');
     } catch (e) {
       if (mounted) showAdminError(context, e);
     } finally {
@@ -134,6 +130,7 @@ class _ProjectEditorPageState extends State<ProjectEditorPage> {
     final isNew = widget.id == null;
     return AdminScaffold(
       title: isNew ? 'Add Project' : 'Edit Project',
+      backTo: '/admin/projects',
       action: FilledButton(onPressed: _saving ? null : _save, child: Text(_saving ? 'Saving…' : 'Save')),
       body: isNew
           ? _form()

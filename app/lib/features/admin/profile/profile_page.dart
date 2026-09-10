@@ -67,7 +67,7 @@ class _ProfilePageState extends State<ProfilePage> {
             key: _c(key).text.trim(),
       });
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Profile saved.')));
+        goBackAfterSave(context, '/admin');
       }
     } catch (e) {
       if (mounted) showAdminError(context, e);

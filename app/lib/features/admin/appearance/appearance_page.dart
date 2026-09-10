@@ -34,7 +34,7 @@ class _AppearancePageState extends State<AppearancePage> {
         ...SiteConfig(visible: _visible, order: _order).toSettings(),
       });
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Appearance saved.')));
+        goBackAfterSave(context, '/admin');
       }
     } catch (e) {
       if (mounted) showAdminError(context, e);

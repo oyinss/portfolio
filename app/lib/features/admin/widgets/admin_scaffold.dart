@@ -1,27 +1,41 @@
-/// Shared shell for admin pages: title + back to dashboard.
+/// Shared shell for admin pages: title + working back button.
 library;
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class AdminScaffold extends StatelessWidget {
   final String title;
   final Widget body;
   final Widget? action;
   final bool showBack;
+
+  /// Where the back button goes when there is no navigation stack
+  /// (admin routes are top-level, so `pop()` alone is usually a no-op).
+  final String backTo;
   const AdminScaffold({
     super.key,
     required this.title,
     required this.body,
     this.action,
     this.showBack = true,
+    this.backTo = '/admin',
   });
+
+  void _goBack(BuildContext context) {
+    if (context.canPop()) {
+      context.pop();
+    } else {
+      context.go(backTo);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
-        automaticallyImplyLeading: showBack,
+        leading: showBack ? BackButton(onPressed: () => _goBack(context)) : null,
         actions: action == null ? null : [Padding(padding: const EdgeInsets.only(right: 8), child: action!)],
       ),
       body: Align(
@@ -52,6 +66,16 @@ Future<bool> confirmDelete(BuildContext context, String label) async {
         ),
       ) ??
       false;
+}
+
+/// Returns to where the user came from after a successful save.
+/// Admin routes are top-level, so `pop()` alone is usually a no-op.
+void goBackAfterSave(BuildContext context, String fallback) {
+  if (context.canPop()) {
+    context.pop();
+  } else {
+    context.go(fallback);
+  }
 }
 
 void showAdminError(BuildContext context, Object e) {
