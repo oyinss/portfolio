@@ -75,7 +75,7 @@ class _HomeBody extends StatelessWidget {
               crossAxisCount: wide ? 3 : 1,
               mainAxisSpacing: 12,
               crossAxisSpacing: 12,
-              mainAxisExtent: 500,
+              mainAxisExtent: 440,
             ),
             itemCount: featured.length,
             itemBuilder: (context, i) {
