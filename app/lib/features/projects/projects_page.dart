@@ -27,22 +27,20 @@ class ProjectsPage extends StatelessWidget {
               subtitle: '${projects.length} published projects. Tap any card for the full case study.',
             ),
             const SizedBox(height: 20),
-            LayoutBuilder(
-              builder: (context, constraints) {
-                final tileWidth =
-                    wide ? (constraints.maxWidth - 12) / 2 : constraints.maxWidth;
-                return Wrap(
-                  spacing: 12,
-                  runSpacing: 12,
-                  children: [
-                    for (final p in projects)
-                      SizedBox(
-                        width: tileWidth,
-                        child: ProjectCard(
-                            project: p, onTap: () => context.go('/projects/${p.slug}')),
-                      ),
-                  ],
-                );
+            GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: wide ? 2 : 1,
+                mainAxisSpacing: 12,
+                crossAxisSpacing: 12,
+                mainAxisExtent: 500,
+              ),
+              itemCount: projects.length,
+              itemBuilder: (context, i) {
+                final p = projects[i];
+                return ProjectCard(
+                    project: p, onTap: () => context.go('/projects/${p.slug}'));
               },
             ),
           ],
