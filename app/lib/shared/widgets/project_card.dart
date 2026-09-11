@@ -1,6 +1,7 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/utils/file_url.dart';
 import '../../models/project.dart';
@@ -13,6 +14,11 @@ class ProjectCard extends StatelessWidget {
   final Project project;
   final VoidCallback onTap;
   const ProjectCard({super.key, required this.project, required this.onTap});
+
+  Future<void> _openUrl(String url) async {
+    final uri = Uri.tryParse(url);
+    if (uri != null) await launchUrl(uri);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +67,7 @@ class ProjectCard extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
               child: Text(
                 project.shortDescription,
-                maxLines: 2,
+                maxLines: 3,
                 overflow: TextOverflow.ellipsis,
               ),
             ),
@@ -77,16 +83,33 @@ class ProjectCard extends StatelessWidget {
               ),
             ),
             const Spacer(),
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: SizedBox(
-                width: double.infinity,
-                child: FilledButton(
-                  onPressed: onTap,
-                  child: const Text('Open →'),
+            if (project.liveUrl != null || project.githubUrl != null)
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  children: [
+                    if (project.liveUrl != null)
+                      Expanded(
+                        flex: 3,
+                        child: FilledButton(
+                          onPressed: () => _openUrl(project.liveUrl!),
+                          child: const Text('Live Demo ↗'),
+                        ),
+                      ),
+                    if (project.liveUrl != null && project.githubUrl != null)
+                      const SizedBox(width: 8),
+                    if (project.githubUrl != null)
+                      Expanded(
+                        flex: 2,
+                        child: OutlinedButton.icon(
+                          onPressed: () => _openUrl(project.githubUrl!),
+                          icon: const Icon(Icons.code, size: 18),
+                          label: const Text('GitHub'),
+                        ),
+                      ),
+                  ],
                 ),
               ),
-            ),
           ],
         ),
       ),
