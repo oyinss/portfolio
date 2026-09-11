@@ -160,7 +160,7 @@ class _HeroCard extends StatelessWidget {
       crossAxisAlignment: wide ? CrossAxisAlignment.start : CrossAxisAlignment.center,
       children: [
         Text(
-          '${profile.headline.isNotEmpty ? '${profile.headline} ' : ''}This is ${profile.name}'.trim(),
+          '${profile.headline.isNotEmpty ? '${profile.headline} ' : ''}${profile.name}'.trim(),
           textAlign: wide ? TextAlign.start : TextAlign.center,
           style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                 fontWeight: FontWeight.w800,
