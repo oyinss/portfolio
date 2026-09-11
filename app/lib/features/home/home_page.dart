@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/api/portfolio_repository.dart';
-import '../../core/theme/accent_theme.dart';
 import '../../core/theme/theme_controller.dart';
 import '../../core/utils/file_url.dart';
 import '../../models/portfolio_profile.dart';
@@ -121,7 +120,7 @@ class _HeroCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Raw accent seed: ColorScheme.primary is a muted tonal derivative.
-    final accentSeed = ThemeScope.of(context).accent.seed;
+    final accentSeed = accentSeedOf(context);
     final onAccent = ThemeData.estimateBrightnessForColor(accentSeed) == Brightness.dark
         ? Colors.white
         : Colors.black;
@@ -262,28 +261,42 @@ class _StatsCard extends StatelessWidget {
     final wide = MediaQuery.widthOf(context) >= 800;
     Widget cell((String, String, IconData) s) {
       final accent = Theme.of(context).colorScheme.primary;
-      return Expanded(
-        child: Padding(
+      final texts = Column(
+        crossAxisAlignment: wide ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(s.$1,
+              style: Theme.of(context)
+                  .textTheme
+                  .headlineSmall
+                  ?.copyWith(fontWeight: FontWeight.w800, color: Colors.white)),
+          Text(s.$2,
+              textAlign: TextAlign.center,
+              style: const TextStyle(color: Colors.white70)),
+        ],
+      );
+      if (wide) {
+        return Padding(
           padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 8),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(s.$3, size: 28, color: accent),
               const SizedBox(width: 12),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(s.$1,
-                      style: Theme.of(context)
-                          .textTheme
-                          .headlineSmall
-                          ?.copyWith(fontWeight: FontWeight.w800, color: Colors.white)),
-                  Text(s.$2, style: const TextStyle(color: Colors.white70)),
-                ],
-              ),
+              Flexible(child: texts),
             ],
           ),
+        );
+      }
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(s.$3, size: 28, color: accent),
+            const SizedBox(height: 8),
+            texts,
+          ],
         ),
       );
     }
@@ -304,7 +317,7 @@ class _StatsCard extends StatelessWidget {
               children: [
                 for (var i = 0; i < stats.length; i++) ...[
                   if (i > 0) const VerticalDivider(width: 1, color: Colors.white12),
-                  cell(stats[i]),
+                  Expanded(child: cell(stats[i])),
                 ],
               ],
             )

@@ -73,4 +73,14 @@ class ThemeScope extends InheritedNotifier<ThemeController> {
 
   static ThemeController of(BuildContext context) =>
       context.dependOnInheritedWidgetOfExactType<ThemeScope>()!.notifier!;
+
+  /// Nullable lookup for widgets that must also build outside the app tree
+  /// (e.g. widget tests). Production always has a scope above.
+  static ThemeController? maybeOf(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<ThemeScope>()?.notifier;
 }
+
+/// Raw accent seed for brand surfaces, falling back to the scheme primary
+/// when no [ThemeScope] is in scope.
+Color accentSeedOf(BuildContext context) =>
+    ThemeScope.maybeOf(context)?.accent.seed ?? Theme.of(context).colorScheme.primary;
