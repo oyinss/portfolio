@@ -13,21 +13,40 @@ import '../../core/theme/app_tokens.dart';
 import '../../core/theme/theme_controller.dart';
 import '../widgets/app_sidebar.dart';
 
-class ResponsiveShell extends StatelessWidget {
+class ResponsiveShell extends StatefulWidget {
   final String location;
   final Widget child;
   const ResponsiveShell({super.key, required this.location, required this.child});
 
   @override
+  State<ResponsiveShell> createState() => _ResponsiveShellState();
+}
+
+class _ResponsiveShellState extends State<ResponsiveShell> {
+  /// Null = auto (expanded on desktop, collapsed on tablet).
+  bool? _collapsed;
+
+  @override
   Widget build(BuildContext context) {
-    final gated = _GatedChild(location: location, child: child);
+    final gated = _GatedChild(location: widget.location, child: widget.child);
     return LayoutBuilder(
       builder: (context, constraints) {
-        if (constraints.maxWidth >= 1024) {
+        if (constraints.maxWidth >= 700) {
+          final collapsed = _collapsed ?? constraints.maxWidth < 1024;
+          void toggle() => setState(() => _collapsed = !collapsed);
           return Scaffold(
             body: Row(
               children: [
-                SizedBox(width: 264, child: AppSidebar(location: location)),
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 220),
+                  curve: Curves.easeInOut,
+                  width: collapsed ? 76 : 264,
+                  child: AppSidebar(
+                    location: widget.location,
+                    compact: collapsed,
+                    onToggleCollapse: toggle,
+                  ),
+                ),
                 VerticalDivider(width: 1, color: context.tokens.border),
                 Expanded(
                   child: Align(
@@ -42,21 +61,13 @@ class ResponsiveShell extends StatelessWidget {
             ),
           );
         }
-        if (constraints.maxWidth >= 700) {
-          return Scaffold(
-            body: Row(
-              children: [
-                SizedBox(width: 76, child: AppSidebar(location: location, compact: true)),
-                VerticalDivider(width: 1, color: context.tokens.border),
-                Expanded(child: gated),
-              ],
-            ),
-          );
-        }
         final theme = ThemeScope.of(context);
+        final isAdmin = widget.location.startsWith('/admin');
         return Scaffold(
-          appBar: AppBar(
-            title: Text(_titleFor(location)),
+          appBar: isAdmin
+              ? null
+              : AppBar(
+                  title: Text(_titleFor(widget.location)),
             actions: [
               ListenableBuilder(
                 listenable: theme,
@@ -68,9 +79,9 @@ class ResponsiveShell extends StatelessWidget {
               ),
             ],
           ),
-          drawer: Drawer(child: AppSidebar(location: location)),
+          drawer: Drawer(child: AppSidebar(location: widget.location)),
           body: RefreshIndicator(
-            onRefresh: () async => context.go(location),
+            onRefresh: () async => context.go(widget.location),
             child: gated,
           ),
         );

@@ -4,6 +4,7 @@ library;
 import 'package:flutter/material.dart';
 
 import '../../core/api/api_client.dart';
+import '../../core/theme/app_tokens.dart';
 
 class AsyncView<T> extends StatefulWidget {
   final Future<T> Function() load;
@@ -61,12 +62,13 @@ class _AsyncViewState<T> extends State<AsyncView<T>> {
 }
 
 /// Gray placeholder blocks shown while content loads.
+/// Uses theme tokens so the skeleton follows light/dark mode.
 class _Skeleton extends StatelessWidget {
   const _Skeleton();
 
   @override
   Widget build(BuildContext context) {
-    final base = Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.6);
+    final base = context.tokens.border;
     Widget bar(double width, double height) => Container(
           width: width,
           height: height,

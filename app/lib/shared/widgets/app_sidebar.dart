@@ -20,7 +20,8 @@ const _adminItem = NavItem('/admin/login', 'Admin', Icons.admin_panel_settings_o
 class AppSidebar extends StatelessWidget {
   final String location;
   final bool compact;
-  const AppSidebar({super.key, required this.location, this.compact = false});
+  final VoidCallback? onToggleCollapse;
+  const AppSidebar({super.key, required this.location, this.compact = false, this.onToggleCollapse});
 
   bool _selected(String path) {
     if (path == '/') return location == '/';
@@ -36,7 +37,20 @@ class AppSidebar extends StatelessWidget {
       child: SafeArea(
         child: Column(
           children: [
-            const SizedBox(height: 24),
+            SizedBox(height: MediaQuery.paddingOf(context).top + 8),
+            if (onToggleCollapse != null)
+              Align(
+                alignment: compact ? Alignment.center : Alignment.centerRight,
+                child: Padding(
+                  padding: EdgeInsets.only(right: compact ? 0 : 8),
+                  child: IconButton(
+                    tooltip: compact ? 'Expand sidebar' : 'Collapse sidebar',
+                    onPressed: onToggleCollapse,
+                    icon: Icon(compact ? Icons.menu_open : Icons.menu),
+                  ),
+                ),
+              ),
+            const SizedBox(height: 8),
             FutureBuilder<PortfolioProfile>(
               future: PortfolioScope.of(context).profile(),
               builder: (context, snap) {
@@ -100,26 +114,72 @@ class AppSidebar extends StatelessWidget {
                       if (sectionForPath(item.path) == key && config.isVisible(key)) item,
                   _adminItem,
                   ];
+                  // Raw accent seed: ColorScheme.primary is a muted tonal
+                  // derivative, so the highlight uses the true theme color.
+                  final accentSeed = theme.accent.seed;
+                  final onAccent =
+                      ThemeData.estimateBrightnessForColor(accentSeed) == Brightness.dark
+                          ? Colors.white
+                          : Colors.black;
                   return ListView(
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     children: [
                       for (final item in items)
-                        compact
-                            ? IconButton(
-                                tooltip: item.label,
-                                isSelected: _selected(item.path),
-                                onPressed: () => context.go(item.path),
-                                icon: Icon(item.icon),
-                              )
-                            : ListTile(
-                                dense: true,
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                                selected: _selected(item.path),
-                                selectedTileColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.12),
-                                leading: Icon(item.icon, size: 20),
-                                title: Text(item.label),
-                                onTap: () => context.go(item.path),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 4),
+                          child: Tooltip(
+                            message: compact ? item.label : '',
+                            child: InkWell(
+                              onTap: () => context.go(item.path),
+                              customBorder: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
                               ),
+                              child: Container(
+                                height: 48,
+                                padding: EdgeInsets.symmetric(horizontal: compact ? 0 : 12),
+                                decoration: BoxDecoration(
+                                  color: _selected(item.path)
+                                      ? accentSeed
+                                      : Colors.transparent,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: compact
+                                    ? Icon(
+                                        item.icon,
+                                        size: 22,
+                                        color: _selected(item.path)
+                                            ? onAccent
+                                            : null,
+                                      )
+                                    : Row(
+                                        children: [
+                                          Icon(
+                                            item.icon,
+                                            size: 20,
+                                            color: _selected(item.path)
+                                                ? onAccent
+                                                : accentSeed,
+                                          ),
+                                          const SizedBox(width: 12),
+                                          Expanded(
+                                            child: Text(
+                                              item.label,
+                                              style: TextStyle(
+                                                fontWeight: _selected(item.path)
+                                                    ? FontWeight.w700
+                                                    : FontWeight.w400,
+                                                color: _selected(item.path)
+                                                    ? onAccent
+                                                    : tokens.textPrimary,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                              ),
+                            ),
+                          ),
+                        ),
                     ],
                   );
                 },
@@ -130,7 +190,7 @@ class AppSidebar extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(16),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text('Appearance', style: TextStyle(color: tokens.textSecondary, fontSize: 12, fontWeight: FontWeight.w600)),
                     const SizedBox(height: 8),
@@ -152,13 +212,12 @@ class AppSidebar extends StatelessWidget {
                     ListenableBuilder(
                       listenable: theme,
                       builder: (context, _) => Wrap(
+                        alignment: WrapAlignment.center,
                         spacing: 10,
                         runSpacing: 10,
                         children: [
                           for (final accent in AccentTheme.values)
-                            Padding(
-                              padding: const EdgeInsets.only(right: 10),
-                              child: Tooltip(
+                            Tooltip(
                                 message: accent.label,
                                 child: InkWell(
                                   onTap: () => theme.setAccent(accent),
@@ -176,7 +235,6 @@ class AppSidebar extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                            ),
                         ],
                       ),
                     ),
@@ -187,6 +245,7 @@ class AppSidebar extends StatelessWidget {
                         final socials = snap.data ?? [];
                         if (socials.isEmpty) return const SizedBox.shrink();
                         return Wrap(
+                          alignment: WrapAlignment.center,
                           spacing: 4,
                           runSpacing: 4,
                           children: [

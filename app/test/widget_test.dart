@@ -15,9 +15,9 @@ import 'package:portfolio_app/models/project.dart';
 import 'package:portfolio_app/models/skill.dart';
 
 void main() {
-  test('three accents resolve to distinct seeds', () {
+  test('twelve accents resolve to distinct seeds', () {
     final seeds = AccentTheme.values.map((a) => a.seed).toSet();
-    expect(seeds.length, 6);
+    expect(seeds.length, 12);
   });
 
   test('light and dark themes build with tokens', () {
