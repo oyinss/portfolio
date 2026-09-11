@@ -198,7 +198,16 @@ class _HeroCard extends StatelessWidget {
               ),
               onPressed: () => context.go('/contact'),
               icon: const Icon(Icons.work_outline, size: 18),
-              label: const Text('Hire Me'),
+              label: const Text('Contact Me'),
+            ),
+            OutlinedButton.icon(
+              style: OutlinedButton.styleFrom(
+                foregroundColor: Colors.white,
+                side: const BorderSide(color: Colors.white54),
+              ),
+              onPressed: () => context.go('/projects'),
+              icon: const Icon(Icons.folder_outlined, size: 18),
+              label: const Text('View Projects'),
             ),
           ],
         ),
