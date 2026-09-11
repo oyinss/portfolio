@@ -67,7 +67,13 @@ class _HomeBody extends StatelessWidget {
             techCount: techCount,
           ),
           const SizedBox(height: 28),
-          Text('Featured Projects', style: text.headlineSmall?.copyWith(fontWeight: FontWeight.w700)),
+          Row(
+            children: [
+              Icon(Icons.star, size: 22, color: Theme.of(context).colorScheme.primary),
+              const SizedBox(width: 8),
+              Text('Featured Projects', style: text.headlineSmall?.copyWith(fontWeight: FontWeight.w700)),
+            ],
+          ),
           const SizedBox(height: 12),
           UniformCardGrid(
             cols: wide ? 3 : 1,
@@ -301,6 +307,7 @@ class _Socials extends StatelessWidget {
       builder: (context, socials) {
         if (socials.isEmpty) return const SizedBox.shrink();
         return Wrap(
+          alignment: WrapAlignment.center,
           spacing: 10,
           runSpacing: 10,
           children: [
