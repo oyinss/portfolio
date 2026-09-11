@@ -61,10 +61,14 @@ class _HomeBody extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _HeroCard(
-            profile: profile,
-            featuredCount: featured.length,
-            techCount: techCount,
+          _HeroCard(profile: profile),
+          const SizedBox(height: 16),
+          _StatsCard(
+            stats: [
+              (profile.yearsExperience, 'Years Experience', Icons.work_outline),
+              ('${featured.length}+', 'Featured', Icons.code),
+              ('$techCount+', 'Technologies', Icons.layers_outlined),
+            ],
           ),
           const SizedBox(height: 28),
           Row(
@@ -96,9 +100,7 @@ class _HomeBody extends StatelessWidget {
 /// the active accent color.
 class _HeroCard extends StatelessWidget {
   final PortfolioProfile profile;
-  final int featuredCount;
-  final int techCount;
-  const _HeroCard({required this.profile, required this.featuredCount, required this.techCount});
+  const _HeroCard({required this.profile});
 
   Future<void> _downloadCv(BuildContext context) async {
     final url = resolveFileUrl(profile.resumeUrl);
@@ -217,17 +219,6 @@ class _HeroCard extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 24),
-        Wrap(
-          spacing: 32,
-          runSpacing: 12,
-          alignment: wide ? WrapAlignment.start : WrapAlignment.center,
-          children: [
-            _HeroStat(value: profile.yearsExperience, label: 'Experience'),
-            _HeroStat(value: '$featuredCount+', label: 'Featured'),
-            _HeroStat(value: '$techCount+', label: 'Technologies'),
-          ],
-        ),
       ],
     );
     return Container(
@@ -260,23 +251,71 @@ class _HeroCard extends StatelessWidget {
   }
 }
 
-class _HeroStat extends StatelessWidget {
-  final String value;
-  final String label;
-  const _HeroStat({required this.value, required this.label});
+/// Info strip below the hero: icon + value + label cells with dividers,
+/// dark like the hero card in both brightness modes.
+class _StatsCard extends StatelessWidget {
+  final List<(String value, String label, IconData icon)> stats;
+  const _StatsCard({required this.stats});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(value,
-            style: Theme.of(context)
-                .textTheme
-                .headlineSmall
-                ?.copyWith(fontWeight: FontWeight.w800, color: Colors.white)),
-        Text(label, style: const TextStyle(color: Colors.white70)),
-      ],
+    final wide = MediaQuery.widthOf(context) >= 800;
+    Widget cell((String, String, IconData) s) {
+      final accent = Theme.of(context).colorScheme.primary;
+      return Expanded(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 8),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(s.$3, size: 28, color: accent),
+              const SizedBox(width: 12),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(s.$1,
+                      style: Theme.of(context)
+                          .textTheme
+                          .headlineSmall
+                          ?.copyWith(fontWeight: FontWeight.w800, color: Colors.white)),
+                  Text(s.$2, style: const TextStyle(color: Colors.white70)),
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFF141A12), Color(0xFF0A0D0A)],
+        ),
+      ),
+      child: wide
+          ? Row(
+              children: [
+                for (var i = 0; i < stats.length; i++) ...[
+                  if (i > 0) const VerticalDivider(width: 1, color: Colors.white12),
+                  cell(stats[i]),
+                ],
+              ],
+            )
+          : Column(
+              children: [
+                for (var i = 0; i < stats.length; i++) ...[
+                  if (i > 0) const Divider(height: 1, color: Colors.white12),
+                  cell(stats[i]),
+                ],
+              ],
+            ),
     );
   }
 }
