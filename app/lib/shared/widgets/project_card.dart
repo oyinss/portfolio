@@ -84,34 +84,36 @@ class ProjectCard extends StatelessWidget {
               ),
             ),
             const Spacer(),
-            if (project.liveUrl != null || project.githubUrl != null)
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Row(
-                  children: [
-                    if (project.liveUrl != null)
-                      Expanded(
-                        flex: 3,
-                        child: FilledButton.icon(
-                          onPressed: () => _openUrl(project.liveUrl!),
-                          icon: const Icon(Icons.north_east, size: 18),
-                          label: const Text('Live Demo'),
-                        ),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  FilledButton.icon(
+                    style: FilledButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      textStyle: const TextStyle(fontSize: 13),
+                      visualDensity: VisualDensity.compact,
+                    ),
+                    onPressed: project.liveUrl != null ? () => _openUrl(project.liveUrl!) : onTap,
+                    icon: const Icon(Icons.north_east, size: 16),
+                    label: const Text('Open'),
+                  ),
+                  if (project.githubUrl != null) ...[
+                    const SizedBox(width: 8),
+                    OutlinedButton.icon(
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        textStyle: const TextStyle(fontSize: 13),
+                        visualDensity: VisualDensity.compact,
                       ),
-                    if (project.liveUrl != null && project.githubUrl != null)
-                      const SizedBox(width: 8),
-                    if (project.githubUrl != null)
-                      Expanded(
-                        flex: 2,
-                        child: OutlinedButton.icon(
-                          onPressed: () => _openUrl(project.githubUrl!),
-                          icon: SocialIcon(platform: 'GitHub', size: 18),
-                          label: const Text('GitHub'),
-                        ),
-                      ),
+                      onPressed: () => _openUrl(project.githubUrl!),
+                      icon: SocialIcon(platform: 'GitHub', size: 16),
+                      label: const Text('GitHub'),
+                    ),
                   ],
-                ),
+                ],
               ),
+            ),
           ],
         ),
       ),
