@@ -60,17 +60,12 @@ class _HomeBody extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _HeroCard(profile: profile),
-          const SizedBox(height: 28),
-          Wrap(
-            spacing: 32,
-            children: [
-              _Stat(value: profile.yearsExperience, label: 'Experience'),
-              _Stat(value: '${featured.length}+', label: 'Featured'),
-              _Stat(value: '$techCount+', label: 'Technologies'),
-            ],
+          _HeroCard(
+            profile: profile,
+            featuredCount: featured.length,
+            techCount: techCount,
           ),
-          const SizedBox(height: 32),
+          const SizedBox(height: 28),
           Text('Featured Projects', style: text.headlineSmall?.copyWith(fontWeight: FontWeight.w700)),
           const SizedBox(height: 12),
           GridView.builder(
@@ -101,7 +96,9 @@ class _HomeBody extends StatelessWidget {
 /// the active accent color.
 class _HeroCard extends StatelessWidget {
   final PortfolioProfile profile;
-  const _HeroCard({required this.profile});
+  final int featuredCount;
+  final int techCount;
+  const _HeroCard({required this.profile, required this.featuredCount, required this.techCount});
 
   Future<void> _downloadCv(BuildContext context) async {
     final url = resolveFileUrl(profile.resumeUrl);
@@ -194,19 +191,32 @@ class _HeroCard extends StatelessWidget {
           runSpacing: 12,
           alignment: wide ? WrapAlignment.start : WrapAlignment.center,
           children: [
-            FilledButton(
+            FilledButton.icon(
               style: FilledButton.styleFrom(backgroundColor: accent, foregroundColor: onAccent),
               onPressed: () => _downloadCv(context),
-              child: const Text('Download CV'),
+              icon: const Icon(Icons.download, size: 18),
+              label: const Text('Download CV'),
             ),
-            OutlinedButton(
+            OutlinedButton.icon(
               style: OutlinedButton.styleFrom(
                 foregroundColor: Colors.white,
                 side: const BorderSide(color: Colors.white54),
               ),
               onPressed: () => context.go('/contact'),
-              child: const Text('Hire Me'),
+              icon: const Icon(Icons.work_outline, size: 18),
+              label: const Text('Hire Me'),
             ),
+          ],
+        ),
+        const SizedBox(height: 24),
+        Wrap(
+          spacing: 32,
+          runSpacing: 12,
+          alignment: wide ? WrapAlignment.start : WrapAlignment.center,
+          children: [
+            _HeroStat(value: profile.yearsExperience, label: 'Experience'),
+            _HeroStat(value: '$featuredCount+', label: 'Featured'),
+            _HeroStat(value: '$techCount+', label: 'Technologies'),
           ],
         ),
       ],
@@ -237,6 +247,27 @@ class _HeroCard extends StatelessWidget {
                 copy,
               ],
             ),
+    );
+  }
+}
+
+class _HeroStat extends StatelessWidget {
+  final String value;
+  final String label;
+  const _HeroStat({required this.value, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(value,
+            style: Theme.of(context)
+                .textTheme
+                .headlineSmall
+                ?.copyWith(fontWeight: FontWeight.w800, color: Colors.white)),
+        Text(label, style: const TextStyle(color: Colors.white70)),
+      ],
     );
   }
 }
@@ -282,23 +313,6 @@ class _Socials extends StatelessWidget {
           ],
         );
       },
-    );
-  }
-}
-
-class _Stat extends StatelessWidget {
-  final String value;
-  final String label;
-  const _Stat({required this.value, required this.label});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(value, style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w800)),
-        Text(label),
-      ],
     );
   }
 }

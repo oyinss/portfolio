@@ -5,6 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/utils/file_url.dart';
 import '../../models/project.dart';
+import 'social_icon.dart';
 import 'tech_chip.dart';
 
 /// Fixed-height card for grids: single Column (no nested flex) with the
@@ -91,9 +92,10 @@ class ProjectCard extends StatelessWidget {
                     if (project.liveUrl != null)
                       Expanded(
                         flex: 3,
-                        child: FilledButton(
+                        child: FilledButton.icon(
                           onPressed: () => _openUrl(project.liveUrl!),
-                          child: const Text('Live Demo ↗'),
+                          icon: const Icon(Icons.north_east, size: 18),
+                          label: const Text('Live Demo'),
                         ),
                       ),
                     if (project.liveUrl != null && project.githubUrl != null)
@@ -103,7 +105,7 @@ class ProjectCard extends StatelessWidget {
                         flex: 2,
                         child: OutlinedButton.icon(
                           onPressed: () => _openUrl(project.githubUrl!),
-                          icon: const Icon(Icons.code, size: 18),
+                          icon: SocialIcon(platform: 'GitHub', size: 18),
                           label: const Text('GitHub'),
                         ),
                       ),
