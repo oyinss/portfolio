@@ -13,6 +13,7 @@ import '../../shared/widgets/async_view.dart';
 import '../../shared/widgets/page_scaffold.dart';
 import '../../shared/widgets/project_card.dart';
 import '../../shared/widgets/social_icon.dart';
+import '../../shared/widgets/uniform_card_grid.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -68,15 +69,8 @@ class _HomeBody extends StatelessWidget {
           const SizedBox(height: 28),
           Text('Featured Projects', style: text.headlineSmall?.copyWith(fontWeight: FontWeight.w700)),
           const SizedBox(height: 12),
-          GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: wide ? 3 : 1,
-              mainAxisSpacing: 12,
-              crossAxisSpacing: 12,
-              mainAxisExtent: 440,
-            ),
+          UniformCardGrid(
+            cols: wide ? 3 : 1,
             itemCount: featured.length,
             itemBuilder: (context, i) {
               final p = featured[i];

@@ -8,6 +8,7 @@ import '../../shared/widgets/async_view.dart';
 import '../../shared/widgets/page_scaffold.dart';
 import '../../shared/widgets/project_card.dart';
 import '../../shared/widgets/section_header.dart';
+import '../../shared/widgets/uniform_card_grid.dart';
 
 class ProjectsPage extends StatelessWidget {
   const ProjectsPage({super.key});
@@ -27,15 +28,8 @@ class ProjectsPage extends StatelessWidget {
               subtitle: '${projects.length} published projects. Tap any card for the full case study.',
             ),
             const SizedBox(height: 20),
-            GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: wide ? 2 : 1,
-                mainAxisSpacing: 12,
-                crossAxisSpacing: 12,
-                mainAxisExtent: 440,
-              ),
+            UniformCardGrid(
+              cols: wide ? 2 : 1,
               itemCount: projects.length,
               itemBuilder: (context, i) {
                 final p = projects[i];
