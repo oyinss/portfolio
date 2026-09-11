@@ -67,6 +67,7 @@ class _ResponsiveShellState extends State<ResponsiveShell> {
           appBar: isAdmin
               ? null
               : AppBar(
+                  automaticallyImplyLeading: false,
                   title: Text(_titleFor(widget.location)),
             actions: [
               ListenableBuilder(
@@ -75,6 +76,13 @@ class _ResponsiveShellState extends State<ResponsiveShell> {
                   tooltip: 'Toggle light/dark',
                   onPressed: theme.toggleLightDark,
                   icon: Icon(theme.mode == ThemeMode.dark ? Icons.light_mode : Icons.dark_mode),
+                ),
+              ),
+              Builder(
+                builder: (context) => IconButton(
+                  tooltip: 'Open menu',
+                  onPressed: () => Scaffold.of(context).openDrawer(),
+                  icon: const Icon(Icons.menu),
                 ),
               ),
             ],
