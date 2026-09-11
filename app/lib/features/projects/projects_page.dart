@@ -27,17 +27,23 @@ class ProjectsPage extends StatelessWidget {
               subtitle: '${projects.length} published projects. Tap any card for the full case study.',
             ),
             const SizedBox(height: 20),
-            GridView.count(
-              crossAxisCount: wide ? 2 : 1,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              mainAxisSpacing: 12,
-              crossAxisSpacing: 12,
-              childAspectRatio: wide ? 1.25 : 0.85,
-              children: [
-                for (final p in projects)
-                  ProjectCard(project: p, onTap: () => context.go('/projects/${p.slug}')),
-              ],
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final tileWidth =
+                    wide ? (constraints.maxWidth - 12) / 2 : constraints.maxWidth;
+                return Wrap(
+                  spacing: 12,
+                  runSpacing: 12,
+                  children: [
+                    for (final p in projects)
+                      SizedBox(
+                        width: tileWidth,
+                        child: ProjectCard(
+                            project: p, onTap: () => context.go('/projects/${p.slug}')),
+                      ),
+                  ],
+                );
+              },
             ),
           ],
         ),

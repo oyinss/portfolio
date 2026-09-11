@@ -73,19 +73,22 @@ class _HomeBody extends StatelessWidget {
           const SizedBox(height: 32),
           Text('Featured Projects', style: text.headlineSmall?.copyWith(fontWeight: FontWeight.w700)),
           const SizedBox(height: 12),
-          GridView.count(
-            crossAxisCount: wide ? 3 : 1,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            mainAxisSpacing: 12,
-            crossAxisSpacing: 12,
-            children: [
-              for (final p in featured)
-                SizedBox(
-                  height: 400,
-                  child: ProjectCard(project: p, onTap: () => context.go('/projects/${p.slug}')),
-                ),
-            ],
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final tileWidth =
+                  wide ? (constraints.maxWidth - 24) / 3 : constraints.maxWidth;
+              return Wrap(
+                spacing: 12,
+                runSpacing: 12,
+                children: [
+                  for (final p in featured)
+                    SizedBox(
+                      width: tileWidth,
+                      child: ProjectCard(project: p, onTap: () => context.go('/projects/${p.slug}')),
+                    ),
+                ],
+              );
+            },
           ),
           const SizedBox(height: 20),
           _Socials(repo: PortfolioScope.of(context)),

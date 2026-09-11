@@ -59,7 +59,7 @@ class ProjectCard extends StatelessWidget {
                     runSpacing: 6,
                     children: [for (final t in project.technologies) TechChip(label: t)],
                   ),
-                  const Spacer(),
+                  const SizedBox(height: 12),
                   Align(
                     alignment: Alignment.centerRight,
                     child: TextButton(onPressed: onTap, child: const Text('Open →')),

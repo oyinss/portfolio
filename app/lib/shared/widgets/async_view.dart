@@ -68,7 +68,8 @@ class _Skeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final base = context.tokens.border;
+    final base = Theme.of(context).extension<AppTokens>()?.border ??
+        Theme.of(context).colorScheme.surfaceContainerHighest;
     Widget bar(double width, double height) => Container(
           width: width,
           height: height,
