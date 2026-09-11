@@ -3,7 +3,7 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 
-import { issueToken, requireAdmin, verifyPassword } from './auth';
+import { hashPassword, issueToken, requireAdmin, verifyPassword } from './auth';
 import { registerAdminRoutes } from './admin';
 
 type Env = {
@@ -177,6 +177,30 @@ app.get('/api/auth/me', requireAdmin, async (c) => {
     .first();
   if (!row) return c.json({ error: 'user not found' }, 401);
   return c.json({ id: row.id, email: row.email });
+});
+
+app.post('/api/auth/change-password', requireAdmin, async (c) => {
+  const body = (await c.req.json().catch(() => null)) as {
+    currentPassword?: string;
+    newPassword?: string;
+  } | null;
+  if (!body?.currentPassword || !body?.newPassword) {
+    return c.json({ error: 'currentPassword and newPassword required' }, 400);
+  }
+  if (body.newPassword.length < 12) {
+    return c.json({ error: 'new password must be at least 12 characters' }, 400);
+  }
+  const row = await c.env.DB.prepare('SELECT id, password_hash FROM users WHERE id = ?')
+    .bind(c.get('adminId'))
+    .first();
+  if (!row) return c.json({ error: 'user not found' }, 401);
+  if (!(await verifyPassword(body.currentPassword, row.password_hash as string))) {
+    return c.json({ error: 'current password is incorrect' }, 401);
+  }
+  await c.env.DB.prepare('UPDATE users SET password_hash = ? WHERE id = ?')
+    .bind(await hashPassword(body.newPassword), c.get('adminId'))
+    .run();
+  return c.json({ ok: true });
 });
 
 // First real protected write (proves the auth chain; full CRUD lands in Phase 6).

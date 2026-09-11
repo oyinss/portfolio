@@ -43,6 +43,11 @@ class DashboardPage extends StatelessWidget {
             icon: const Icon(Icons.public),
           ),
           IconButton(
+            tooltip: 'Change password',
+            onPressed: () => context.go('/admin/password'),
+            icon: const Icon(Icons.key_outlined),
+          ),
+          IconButton(
             tooltip: 'Log out',
             onPressed: () async {
               await auth.logout();

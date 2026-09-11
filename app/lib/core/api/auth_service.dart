@@ -56,6 +56,18 @@ class AuthService extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Changes the admin password. The session stays valid.
+  Future<void> changePassword({required String currentPassword, required String newPassword}) async {
+    final api = _api;
+    if (api == null) throw const ApiException('API is not configured (mock mode).');
+    if (_token == null || _token!.isEmpty) throw const ApiException('Not signed in.');
+    await api.postJson(
+      '/api/auth/change-password',
+      {'currentPassword': currentPassword, 'newPassword': newPassword},
+      bearer: _token,
+    );
+  }
+
   /// Drops a locally stored token the server rejects (expired/revoked).
   Future<void> dropInvalidToken() async {
     if (_token == null) return;

@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../core/api/auth_service.dart';
 import '../features/about/about_page.dart';
 import '../features/admin/appearance/appearance_page.dart';
+import '../features/admin/auth/change_password_page.dart';
 import '../features/admin/auth/login_page.dart';
 import '../features/admin/dashboard/dashboard_page.dart';
 import '../features/admin/education/admin_education_page.dart';
@@ -80,6 +81,10 @@ GoRouter buildRouter({required AuthService auth}) {
           GoRoute(
             path: '/admin/login',
             builder: (c, s) => const LoginPage(),
+          ),
+          GoRoute(
+            path: '/admin/password',
+            builder: (c, s) => const ChangePasswordPage(),
           ),
           GoRoute(
             path: '/admin',

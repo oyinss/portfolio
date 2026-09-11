@@ -45,6 +45,23 @@ export async function verifyPassword(password: string, stored: string): Promise<
   return timingSafeEqual(derived, expected);
 }
 
+/// Hashes a new password with the same PBKDF2-SHA256 scheme as
+/// scripts/create-admin.mjs (100k iterations, 16-byte salt, 32-byte hash).
+export async function hashPassword(password: string): Promise<string> {
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const key = await crypto.subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, [
+    'deriveBits',
+  ]);
+  const derived = new Uint8Array(
+    await crypto.subtle.deriveBits(
+      { name: 'PBKDF2', hash: 'SHA-256', salt: salt as BufferSource, iterations: 100000 },
+      key,
+      256,
+    ),
+  );
+  return `pbkdf2$100000$${b64encode(salt)}$${b64encode(derived)}`;
+}
+
 async function hmacSign(data: string, secret: string): Promise<Uint8Array> {
   const key = await crypto.subtle.importKey('raw', enc.encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, [
     'sign',
