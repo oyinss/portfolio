@@ -130,7 +130,11 @@ class AppSidebar extends StatelessWidget {
                           child: Tooltip(
                             message: compact ? item.label : '',
                             child: InkWell(
-                              onTap: () => context.go(item.path),
+                            onTap: () {
+                              // Close the mobile drawer (no-op on desktop).
+                              Scaffold.of(context).closeDrawer();
+                              context.go(item.path);
+                            },
                               customBorder: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),
