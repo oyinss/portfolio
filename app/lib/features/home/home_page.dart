@@ -345,10 +345,11 @@ class _Socials extends StatelessWidget {
       load: repo.socials,
       builder: (context, socials) {
         if (socials.isEmpty) return const SizedBox.shrink();
-        return Wrap(
-          alignment: WrapAlignment.center,
-          spacing: 10,
-          runSpacing: 10,
+        return Center(
+          child: Wrap(
+            alignment: WrapAlignment.center,
+            spacing: 10,
+            runSpacing: 10,
           children: [
             for (final s in socials)
               Tooltip(
@@ -359,7 +360,8 @@ class _Socials extends StatelessWidget {
                   label: Text(s.platform),
                 ),
               ),
-          ],
+            ],
+          ),
         );
       },
     );
