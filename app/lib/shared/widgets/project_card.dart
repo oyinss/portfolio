@@ -87,6 +87,7 @@ class ProjectCard extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(16),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   FilledButton.icon(
                     style: FilledButton.styleFrom(
